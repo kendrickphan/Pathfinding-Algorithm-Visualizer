@@ -37,11 +37,6 @@ def create_buttons(win):
 def draw_buttons(win, gameinst):
 	for button in gameinst.buttons:
 		button.draw(win)
-	# djikstra_button.draw(win)
-	# astar_button.draw(win)
-	# dfs_button.draw(win)
-	# bfs_button.draw(win)
-	# start_button.draw(win)
 
 
 # finding button pressed, handle button press

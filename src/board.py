@@ -6,6 +6,7 @@ from game import Game
 from drawboard import *
 
 import pygame
+
 from random import randint
 from time import sleep
 
@@ -40,10 +41,10 @@ def gui():
                 running = False
 
             # making start and end and barriers
-            if pygame.mouse.get_pressed()[0]: # left mouse
-                pos = pygame.mouse.get_pos() 
+            if pygame.mouse.get_pressed()[0]: # left mouse click 
+                pos = pygame.mouse.get_pos() # get PIXEL POS of click
                 if pos[1] < 800: # handle nodes
-                    row, col = get_clicked_pos(pos, ROWS, WIDTH) # GET WHICH NODE SELECTED
+                    row, col = get_clicked_pos(pos, ROWS, WIDTH) # GET WHICH NODE INDEX SELECTED
                     node = gameinst.grid[row][col]
                     if not start and node != end: # start node init
                         start = node
@@ -61,18 +62,18 @@ def gui():
                 else: # handle buttons
                     button_sel = handle_buttons(win, gameinst, pos)
                     if button_sel == 1: # start game
-                        gameinst.grid[0][0].unvisited.clear() # clearing unvisited global arr
+                        gameinst.grid[0][0].unvisited.clear() # clearing unvisited global arr for astar and bfs
                         for row in gameinst.grid:
                             for node in row:
-                                if node.is_open() or node.is_closed() or node.is_path():
+                                if node.is_open() or node.is_closed() or node.is_path(): # resetting board 
                                     node.reset()
-                        if start and end:
+                        if start and end: # starting game only if start/end node exist
                             start_game(gameinst)
                     elif button_sel == 2: # reset game
                         gameinst.start, start = None, None
                         gameinst.end, end = None, None
                         newboard = make_board(gameinst.win, ROWS, WIDTH) # remaking board
-                        gameinst.grid = newboard
+                        gameinst.grid = newboard # reassigning board
                         # draw(win, ROWS, WIDTH, gameinst)
                     elif button_sel == 3: # end game
                         print("PLAYER QUIT")
@@ -106,19 +107,14 @@ def start_game(gameinst):
 
     currentnode = gameinst.start # init
 
-    unvisited = []
-    unvisited.append([gameinst.start])
-
     # djikstra's set up
     if gameinst.algorithm == 1:
+        unvisited = []
+        unvisited.append([gameinst.start])
         for neighbor in gameinst.start.get_neighbors(): # getting start neighbors
             if neighbor != None:
                 neighbor.make_open()
                 unvisited[0].append(neighbor)
-        #print("Getting weights")
-
-        # get box
-        #board = get_weights(gameinst.grid, gameinst.start, gameinst.end)
 
     # choice of algorithm 
     while 1: # algorithm loop
@@ -126,7 +122,6 @@ def start_game(gameinst):
             unvisited = dijktras(gameinst, unvisited) 
             if unvisited == gameinst.end: # end for dijkstra's
                 reconstruct_path(gameinst, gameinst.end)
-                gameinst.end.make_end()
                 break
         elif gameinst.algorithm == 2:
             currentnode = astar(gameinst, currentnode)
@@ -135,70 +130,19 @@ def start_game(gameinst):
                 break
             if currentnode == gameinst.end:  # end condition for astar
                 reconstruct_path(gameinst, gameinst.end)
-                gameinst.end.make_end()
                 break
         elif gameinst.algorithm == 3:
-            ret = dfs(gameinst, currentnode)
+            dfs(gameinst, currentnode)
             break
         elif gameinst.algorithm == 4:
             currentnode.unvisited.append(gameinst.start)
-            ret = bfs(gameinst, currentnode)
-            # reconstructing path
-            # node = gameinst.start
-            # while node != gameinst.end:
-            #     nextnode = None
-            #     leastdist = float("inf")
-            #     print("here")
-            #     for neighbor in node.get_neighbors():
-            #         if neighbor:
-            #             if neighbor.get_dist() < leastdist:
-            #                 leastdist = neighbor.get_dist()
-            #                 nextnode = neighbor
-            #     nextnode.make_path()
-            #     node = nextnode
+            bfs(gameinst, currentnode)
             reconstruct_path(gameinst, gameinst.end)
-            gameinst.end.make_end()
             break
 
         draw(gameinst.win, ROWS, WIDTH, gameinst) # updating board after round
         gameinst.end.make_end()
 
-        # if len(unvisited) == 0:
-            #print("Path not found.")
-            #break
-        
-
-# def get_weights(board, start, end):
-#     x1, y1 = start.get_pos()
-#     x2, y2 = end.get_pos()
-
-#     if x1 < x2:
-#         maxx = x2
-#         minx = x1
-#     else:
-#         maxx = x1 
-#         minx = x2 
-#     if y1 < y2:
-#         maxy = y2 
-#         miny = y1
-#     else:
-#         maxy = y1
-#         miny = y2 
-
-#     if not minx < 4:
-#         minx -= 3
-#     if not miny < 4:
-#         miny -= 3
-#     if not maxx > ROWS - 3:
-#         maxx += 3
-#     if not maxy > ROWS - 3:
-#         maxy += 3
-
-#     for x in range(minx, maxx + 1):
-#         for y in range(miny, maxy + 1):
-#             board[x][y].set_weight(randint(1,10))
-
-#     return board
 
 # FUNCTION FOR AFTER ALGORITHM EXECUTION FOR FINDING SHORTEST POSSIBLE PATH
 def reconstruct_path(gameinst, currentnode):
@@ -206,8 +150,12 @@ def reconstruct_path(gameinst, currentnode):
     start = gameinst.start
     end = gameinst.end
 
+    if not currentnode:
+        return
+
     # print(end.get_prevnode())
     if currentnode == start: # recursion end
+        gameinst.end.make_end()
         return
     # print(currentnode.get_pos())
     if not currentnode.is_end():

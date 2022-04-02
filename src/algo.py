@@ -84,6 +84,7 @@ def calc_dist(board, start, end, node):
     return abs((abs(x1 - x2) + abs(y1 - y2)) + (abs(x1 - x3) + abs(y1 - y3)))
                 # distance from start           # distance from end
 # EOF aster.py
+# ########################################################################################################################
 
 # bfs
 def bfs(gameinst, currentnode):
@@ -114,6 +115,7 @@ def bfs(gameinst, currentnode):
             draw(win, ROWS, WIDTH, gameinst)
 
 # EOF bfs.py
+# ########################################################################################################################
 
 #dfs
 def dfs(gameinst, currentnode):
@@ -155,7 +157,9 @@ def get_neighbors(currentnode):
     new_neighbors = [neighbors[1], neighbors[2], neighbors[0], neighbors[3]]
     return new_neighbors
 # EOF dfs.py
+# ########################################################################################################################
 
+#dijkstras
 #Adjusting weights + potential gradient of path (light to dark)
 def dijktras(gameinst, unvisited):
 
