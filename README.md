@@ -1,6 +1,7 @@
 # Pathfinding Algorithm Visualizer
  
 by Kendrick Phan and Tiffany Mejia
+
 -Visualizes four pathfinding algorithms: Dijkstra's Unweighted Algorithm, A*, DFS, BFS on a grid consisting of a start and end nodes, with barrier nodes
 
 Algorithms:
@@ -19,7 +20,9 @@ Algorithms:
 
 How to Use:
 1. Install pygame through use of pip by opening Command Prompt (for Windows)
+
    Run this command to install : python3 -m pip install -U pygame --user
+   
    Use this command to test    : python3 -m pygame.examples.aliens
 2. Run main.py
 3. First left click will set START NODE
