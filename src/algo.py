@@ -18,7 +18,7 @@ def astar(gameinst, currentnode):
             neighbors.append(neighbor) # getting neighbors
 
     for node in neighbors:
-        if node.is_unvisited() or node.is_open() or node.is_end():
+        if node.is_unvisited() or node.is_open() or node.is_end(): # a little redundant check for posteriety
             node.make_open() 
             currentnode.append_unvisited(node) # adds to unvisited list
             dist = calc_dist(board, start, end, node) 
@@ -31,33 +31,31 @@ def astar(gameinst, currentnode):
                     node.remove_unvisited(currentnode) # removes from unvisited list
 
     
-    if len(neighbors) == 0: # if no nodes are unvisited
+    if len(neighbors) == 0: # IF NO VALID NEIGHBOR NODES edge condition
         #if currentnode.unvisited[0] == start: # if no possible way to get to end node
         currentnode.make_closed()
         if currentnode in currentnode.unvisited:
             currentnode.remove_unvisited(currentnode)
         if len(currentnode.unvisited) == 0:
-            return start # if no open/unvisited nodes, then return start
+            return start # if no open/unvisited nodes, then return start FAILURE TO FIND ROUTE
         else:
-            return calc_unvisited(board, start, end, currentnode)
+            return calc_unvisited(board, start, end, currentnode) # FINDING NEXTNODE IF NO NEIGHBORS
         #else:
             #return currentnode.get_prevnode()
         #loop through previous nodes and check for legal neigbors
         #if completely blocked, return error of blockage and possible reset the board
 
-    leastdist = -1 # arbitrarily large starting distance
+    leastdist = float("inf")
     
-    for node in currentnode.unvisited: # finding next current node
+    for node in currentnode.unvisited: # finding next current node REGULAR CONDITION
         dist = node.get_dist()
-        if leastdist < 0:
-            leastdist = dist
-            currentnode = node
-        elif dist <= leastdist:
+        if dist <= leastdist:
             leastdist = dist
             currentnode = node
     #print(currentnode.get_pos()) for debugging
     return currentnode
 
+# helper function for no valid neighbors edge condition
 def calc_unvisited(board, start, end, currentnode):
     leastdist = -1
     for node in currentnode.unvisited: # FINDING NEXT CURRENT NODE
@@ -71,11 +69,13 @@ def calc_unvisited(board, start, end, currentnode):
     #print(currentnode.get_pos()) for debugging
     return currentnode
 
+# distance from end to node
 def calc_dist2(board, end, node):
     x1, y1 = node.get_pos()
     x2, y2 = end.get_pos()
     return abs(x1 - x2) + abs(y1 - y2)
 
+# distance from end and start to node
 def calc_dist(board, start, end, node):
     x1, y1 = node.get_pos()
     x2, y2 = start.get_pos()
@@ -106,11 +106,11 @@ def bfs(gameinst, currentnode):
                 return 0
             elif node is None:
                 continue
-            draw(gameinst.win, ROWS, WIDTH, gameinst)
+            draw(win, ROWS, WIDTH, gameinst)
         if not nownode.is_start(): # CLOSE POPPED NODE
             nownode.set_dist(calc_dist(board, start, end, nownode))
             nownode.make_closed()
-            draw(gameinst.win, ROWS, WIDTH, gameinst)
+            draw(win, ROWS, WIDTH, gameinst)
 
 # EOF bfs.py
 

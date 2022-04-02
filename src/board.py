@@ -29,7 +29,7 @@ def gui():
     # GAME LOOP
     running = True 
     while running: 
-        draw(win, ROWS, WIDTH, gameinst) # draws board at the top of every loop
+        draw(gameinst.win, ROWS, WIDTH, gameinst) # draws board at the top of every loop
 
         # keep looking for user input
         for event in pygame.event.get():
@@ -44,7 +44,7 @@ def gui():
                 pos = pygame.mouse.get_pos() 
                 if pos[1] < 800: # handle nodes
                     row, col = get_clicked_pos(pos, ROWS, WIDTH) # GET WHICH NODE SELECTED
-                    node = board[row][col]
+                    node = gameinst.grid[row][col]
                     if not start and node != end: # start node init
                         start = node
                         start.make_start()
@@ -61,6 +61,7 @@ def gui():
                 else: # handle buttons
                     button_sel = handle_buttons(win, gameinst, pos)
                     if button_sel == 1: # start game
+                        gameinst.grid[0][0].unvisited.clear() # clearing unvisited global arr
                         for row in gameinst.grid:
                             for node in row:
                                 if node.is_open() or node.is_closed() or node.is_path():
@@ -70,8 +71,9 @@ def gui():
                     elif button_sel == 2: # reset game
                         gameinst.start, start = None, None
                         gameinst.end, end = None, None
-                        board = make_board(gameinst.win, ROWS, WIDTH) # remaking board
-                        gameinst.grid = board
+                        newboard = make_board(gameinst.win, ROWS, WIDTH) # remaking board
+                        gameinst.grid = newboard
+                        # draw(win, ROWS, WIDTH, gameinst)
                     elif button_sel == 3: # end game
                         print("PLAYER QUIT")
                         running = False
