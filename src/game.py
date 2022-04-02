@@ -10,6 +10,8 @@ class Game:
         self.algorithm = 1
         self.start = None
         self.end = None
+        self.barriers = []
+        self.paths = []
 
     
 

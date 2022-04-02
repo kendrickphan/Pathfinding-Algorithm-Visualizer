@@ -1,14 +1,25 @@
-# draws board/lines in pygame
+# draws board/lines in pygame gui board
+
 from node import *
 import pygame
 
 def draw_board(win, rows, width):
 	gap = width // rows
 	for i in range(rows):
-		pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap)) # HORIZ LINE
+		pygame.draw.line(win, TEAL, (0, i * gap), (width, i * gap)) # HORIZ LINE
 		for j in range(rows):
-			pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width)) # VERT LINES
+			pygame.draw.line(win, TEAL, (j * gap, 0), (j * gap, width)) # VERT LINES
 	pygame.draw.line(win, BLACK, (0, rows * gap), (width, rows * gap), 3) # FINAL HORIZ LINE
+def draw_barriers(win, gameinst):
+	for barrier in gameinst.barriers:
+		barrier.make_barrier(win)
+def draw_path(win, gameinst):
+	for path in gameinst.paths:
+		path.make_path(win)
+def draw_start(win, gameinst):
+	gameinst.start.make_start(win)
+def draw_end(win, gameinst):
+	gameinst.end.make_end(win)
 
 # draws nodes in pygame
 def draw(win, rows, width, gameinst):
@@ -19,6 +30,12 @@ def draw(win, rows, width, gameinst):
 			node.draw(win)
 
 	draw_board(win, rows, width) # draw grid lines
+	draw_barriers(win, gameinst)
+	draw_path(win, gameinst)
+	if gameinst.start:
+		draw_start(win, gameinst)
+	if gameinst.end:
+		draw_end(win, gameinst)
 	draw_buttons(win, gameinst) # draw buttons
 	draw_key(win)
 
@@ -29,7 +46,7 @@ def create_buttons(win):
 	astar_button = Button(win, (250, 900), "     A*    ", BLACK, WHITE)
 	dfs_button = Button(win, (450, 900), "    DFS    ", BLACK, WHITE)
 	bfs_button = Button(win, (600, 900), "    BFS   ", BLACK, WHITE)
-	start_button = Button(win, (350, 950), " START ", BLACK, GREEN)
+	start_button = Button(win, (350, 950), " START ", BLACK, GREEN)		
 	reset_button = Button(win, (25, 950), " RESET ", BLACK, ORANGE)
 	exit_button = Button(win, (750, 950), " X ", BLACK, RED)
 	return [djikstra_button, astar_button, dfs_button, bfs_button, start_button, reset_button, exit_button]

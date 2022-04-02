@@ -14,12 +14,14 @@ def astar(gameinst, currentnode):
     neighbors = []
 
     for neighbor in currentnode.get_neighbors():
+        if not neighbor:
+            continue
         if not neighbor.is_closed() and not neighbor.is_barrier():
             neighbors.append(neighbor) # getting neighbors
 
     for node in neighbors:
         if node.is_unvisited() or node.is_open() or node.is_end(): # a little redundant check for posteriety
-            node.make_open() 
+            if not node.is_end(): node.make_open() 
             currentnode.append_unvisited(node) # adds to unvisited list
             dist = calc_dist(board, start, end, node) 
             if node.get_dist() > dist: # if new distance is smaller than exisiting
@@ -124,6 +126,9 @@ def dfs(gameinst, currentnode):
     board = gameinst.grid
     start = gameinst.start
     end = gameinst.end
+    print(currentnode.get_pos())
+    if currentnode == end:
+        print("asdfasdfsaf")
 
     neighbors = get_neighbors(currentnode)
     # for node in neighbors:
@@ -139,10 +144,10 @@ def dfs(gameinst, currentnode):
 
         if node is None:
             continue
-        if node.is_end(): # END COND
+        elif node.is_end(): # END COND
             node.set_prevnode(currentnode)
             return gameinst.end
-        if not node.is_closed() and not node.is_barrier() and not node.is_start(): 
+        elif not node.is_closed() and not node.is_barrier() and not node.is_start(): 
             node.make_closed() # close node
             draw(win, ROWS, WIDTH, gameinst)
             node.set_prevnode(currentnode) # setting prev node
@@ -180,7 +185,7 @@ def dijktras(gameinst, unvisited):
             if currentnode == None: # if out of bounds
                 continue
             if currentnode.is_unvisited() or currentnode.is_open() or currentnode.is_end():
-                currentnode.make_closed() 
+                currentnode.make_closed() # mark as visited 
                 
                 # has to be here
                 draw(win, ROWS, WIDTH, gameinst)

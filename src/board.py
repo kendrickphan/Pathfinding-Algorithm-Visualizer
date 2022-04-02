@@ -48,21 +48,24 @@ def gui():
                     node = gameinst.grid[row][col]
                     if not start and node != end: # start node init
                         start = node
-                        start.make_start()
+                        start.make_start(gameinst.win)
                         gameinst.start = start
 
                     elif not end and node != start: # end node init after start
                         end = node
-                        end.make_end()
+                        end.make_end(gameinst.win)
                         gameinst.end = end
                     
                     elif node != end and node != start: # wall nodes init after start/end
-                        node.make_barrier()
+                        node.make_barrier(gameinst.win)
+                        gameinst.barriers.append(node)
 
                 else: # handle buttons
                     button_sel = handle_buttons(win, gameinst, pos)
                     if button_sel == 1: # start game
                         gameinst.grid[0][0].unvisited.clear() # clearing unvisited global arr for astar and bfs
+                        gameinst.paths.clear()
+                        gameinst.end.make_end(gameinst.win)
                         for row in gameinst.grid:
                             for node in row:
                                 if node.is_open() or node.is_closed() or node.is_path(): # resetting board 
@@ -74,10 +77,14 @@ def gui():
                         gameinst.end, end = None, None
                         newboard = make_board(gameinst.win, ROWS, WIDTH) # remaking board
                         gameinst.grid = newboard # reassigning board
-                        # draw(win, ROWS, WIDTH, gameinst)
+                        gameinst.barriers.clear()
+                        gameinst.paths.clear()
+                        draw(win, ROWS, WIDTH, gameinst)
                     elif button_sel == 3: # end game
                         print("PLAYER QUIT")
                         running = False
+                    
+                    button_sel = 0
 
             # resetting nodes
             elif pygame.mouse.get_pressed()[2]: # right mouse
@@ -143,7 +150,7 @@ def start_game(gameinst):
             break
 
         draw(gameinst.win, ROWS, WIDTH, gameinst) # updating board after round
-        gameinst.end.make_end()
+        gameinst.end.make_end(gameinst.win)
 
 
 # FUNCTION FOR AFTER ALGORITHM EXECUTION FOR FINDING SHORTEST POSSIBLE PATH
@@ -157,11 +164,12 @@ def reconstruct_path(gameinst, currentnode):
 
     # print(end.get_prevnode())
     if currentnode == start: # recursion end
-        gameinst.end.make_end()
+        gameinst.end.make_end(gameinst.win)
         return
     # print(currentnode.get_pos())
     if not currentnode.is_end():
-        currentnode.make_path()
+        gameinst.paths.append(currentnode)
+        currentnode.make_path(gameinst.win)
         draw(gameinst.win, ROWS, WIDTH, gameinst)
         sleep(.05)
     #print (currentnode.get_prevnode().get_pos())
