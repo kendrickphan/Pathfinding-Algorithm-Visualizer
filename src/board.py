@@ -132,8 +132,10 @@ def start_game(gameinst):
                 reconstruct_path(gameinst, gameinst.end)
                 break
         elif gameinst.algorithm == 3:
-            dfs(gameinst, currentnode)
-            break
+            currentnode = dfs(gameinst, currentnode)
+            if currentnode == gameinst.end:
+                reconstruct_path(gameinst, gameinst.end)
+                break
         elif gameinst.algorithm == 4:
             currentnode.unvisited.append(gameinst.start)
             bfs(gameinst, currentnode)

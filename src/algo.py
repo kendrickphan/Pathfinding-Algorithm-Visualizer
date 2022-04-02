@@ -126,24 +126,28 @@ def dfs(gameinst, currentnode):
     end = gameinst.end
 
     neighbors = get_neighbors(currentnode)
-    for node in neighbors:
+    # for node in neighbors:
 
-        if node is None or node.is_closed() or node.is_start() or node.is_barrier():
-            continue
-        if node.is_end(): # END COND
-            return 0
-        
-        node.make_open()
-        draw(win, ROWS, WIDTH, gameinst)
+    #     if node is None or node.is_closed() or node.is_start() or node.is_barrier():
+    #         continue
+    #     if node.is_end(): # END COND
+    #         node.set_prevnode(currentnode)
+    #         return 0
+    #     node.make_open()
+    #     draw(win, ROWS, WIDTH, gameinst)
     for node in neighbors: # CHECKING NEIGHBORS
+
         if node is None:
             continue
+        if node.is_end(): # END COND
+            node.set_prevnode(currentnode)
+            return gameinst.end
         if not node.is_closed() and not node.is_barrier() and not node.is_start(): 
             node.make_closed() # close node
             draw(win, ROWS, WIDTH, gameinst)
-
-            if dfs(gameinst, node) == 0: # RECURSIVELY CALL DFS
-                return 0
+            node.set_prevnode(currentnode) # setting prev node
+            # if dfs(gameinst, node) == 0: # RECURSIVELY CALL DFS
+            return node 
             
 # HELPER FUNCTION TO GET NEIGHBORS IN PROPER ORDER
 def get_neighbors(currentnode):
