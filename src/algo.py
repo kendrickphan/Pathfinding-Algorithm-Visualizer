@@ -96,6 +96,8 @@ def bfs(gameinst, currentnode):
     while len(currentnode.unvisited) != 0: # WHILE QUEUE IS NOT EMPTY
         nownode = currentnode.unvisited.pop(0) # POP FROM QUEUE
         for node in nownode.get_neighbors(): # HANDLE NEIGHBORS
+            if node is None:
+                continue
             if node.is_unvisited(): 
                 currentnode.unvisited.append(node)
                 node.make_open()
@@ -104,8 +106,7 @@ def bfs(gameinst, currentnode):
                 nownode.unvisited.clear() # CLEAR IN CASE OF RESET
                 node.set_prevnode(nownode) 
                 return 0
-            elif node is None:
-                continue
+            
             draw(win, ROWS, WIDTH, gameinst)
         if not nownode.is_start(): # CLOSE POPPED NODE
             nownode.set_dist(calc_dist(board, start, end, nownode))
