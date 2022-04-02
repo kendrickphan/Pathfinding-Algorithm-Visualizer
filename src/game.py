@@ -7,7 +7,7 @@ class Game:
         self.win = win
         self.grid = grid
         self.buttons = buttons
-        self.algorithm = 1
+        self.algorithm = 2
         self.start = None
         self.end = None
         self.barriers = []

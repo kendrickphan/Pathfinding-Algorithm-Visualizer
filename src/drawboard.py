@@ -42,8 +42,8 @@ def draw(win, rows, width, gameinst):
 	pygame.display.update()
 
 def create_buttons(win):
-	djikstra_button = Button(win, (100, 900), "Dijkstra's", BLACK, YELLOW)
-	astar_button = Button(win, (250, 900), "     A*    ", BLACK, WHITE)
+	djikstra_button = Button(win, (250, 900), "Dijkstra's", BLACK, WHITE)
+	astar_button = Button(win, (100, 900), "     A*    ", BLACK, YELLOW)
 	dfs_button = Button(win, (450, 900), "    DFS    ", BLACK, WHITE)
 	bfs_button = Button(win, (600, 900), "    BFS   ", BLACK, WHITE)
 	start_button = Button(win, (350, 950), " START ", BLACK, GREEN)		
@@ -62,12 +62,12 @@ def handle_buttons(win, gameinst, pos):
 	if y < 925 and y > 900:
 		if x > 100 and x < 200:
 			turn_to_white(gameinst)
-			gameinst.buttons[0].bgcolor = YELLOW
-			gameinst.algorithm = 1
-		elif x > 250 and x < 350:
-			turn_to_white(gameinst)
 			gameinst.buttons[1].bgcolor = YELLOW
 			gameinst.algorithm = 2
+		elif x > 250 and x < 350:
+			turn_to_white(gameinst)
+			gameinst.buttons[0].bgcolor = YELLOW
+			gameinst.algorithm = 1
 		elif x > 450 and x < 550:
 			turn_to_white(gameinst)
 			gameinst.buttons[2].bgcolor = YELLOW

@@ -92,10 +92,15 @@ class Node:
     def make_open(self):
         self.color = TURQUOISE
     def make_barrier(self, win):
-        pygame.draw.line(win, BLACK, (self.x, self.y), (self.x, self.y + self.width))
-        pygame.draw.line(win, BLACK, (self.x, self.y), (self.x + self.width, self.y))
-        pygame.draw.line(win, BLACK, (self.x + self.width, self.y + self.width), (self.x, self.y + self.width))
-        pygame.draw.line(win, BLACK, (self.x + self.width, self.y + self.width), (self.x + self.width, self.y))
+        neighbors = self.get_neighbors()
+        if neighbors[1] and neighbors[1].is_barrier():
+            pygame.draw.line(win, BLACK, (self.x, self.y), (self.x, self.y + self.width)) # left
+        if neighbors[3] and neighbors[3].is_barrier():
+            pygame.draw.line(win, BLACK, (self.x, self.y), (self.x + self.width, self.y)) # up
+        if neighbors[2] and neighbors[2].is_barrier():
+            pygame.draw.line(win, BLACK, (self.x + self.width, self.y + self.width), (self.x, self.y + self.width)) # down
+        if neighbors[0] and neighbors[0].is_barrier():
+            pygame.draw.line(win, BLACK, (self.x + self.width, self.y + self.width), (self.x + self.width, self.y)) # right
         self.color = BLACK
     def make_end(self, win):
         pygame.draw.line(win, RED, (self.x, self.y), (self.x, self.y + self.width))
@@ -106,13 +111,13 @@ class Node:
     def make_path(self, win):
         self.color = YELLOW
         neighbors = self.get_neighbors()
-        if neighbors[1].is_path():
+        if neighbors[1] and neighbors[1].is_path():
             pygame.draw.line(win, YELLOW, (self.x, self.y), (self.x, self.y + self.width)) # left
-        if neighbors[3].is_path():
+        if neighbors[3] and neighbors[3].is_path():
             pygame.draw.line(win, YELLOW, (self.x, self.y), (self.x + self.width, self.y)) # up
-        if neighbors[2].is_path():
+        if neighbors[2] and neighbors[2].is_path():
             pygame.draw.line(win, YELLOW, (self.x + self.width, self.y + self.width), (self.x, self.y + self.width)) # down
-        if neighbors[0].is_path():
+        if neighbors[0] and neighbors[0].is_path():
             pygame.draw.line(win, YELLOW, (self.x + self.width, self.y + self.width), (self.x + self.width, self.y)) # right
 
     def draw(self, win):
