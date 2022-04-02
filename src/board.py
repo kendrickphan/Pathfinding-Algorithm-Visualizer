@@ -125,8 +125,7 @@ def start_game(gameinst):
         if gameinst.algorithm == 1:
             unvisited = dijktras(gameinst, unvisited) 
             if unvisited == gameinst.end: # end for dijkstra's
-                currentnode = gameinst.end
-                reconstruct_path(gameinst, currentnode)
+                reconstruct_path(gameinst, gameinst.end)
                 gameinst.end.make_end()
                 break
         elif gameinst.algorithm == 2:
@@ -135,7 +134,7 @@ def start_game(gameinst):
                 print("Path not Found.") # no possible path to end
                 break
             if currentnode == gameinst.end:  # end condition for astar
-                reconstruct_path(gameinst, currentnode)
+                reconstruct_path(gameinst, gameinst.end)
                 gameinst.end.make_end()
                 break
         elif gameinst.algorithm == 3:
