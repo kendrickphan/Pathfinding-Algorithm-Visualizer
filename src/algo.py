@@ -1,6 +1,7 @@
 # algo.py
 # algorithms : A*, Dijkstra's, DFS, BFS
 
+from turtle import end_fill
 from node import *
 from drawboard import *
 
@@ -170,58 +171,93 @@ def get_neighbors(currentnode):
 
 #dijkstras
 #Adjusting weights + potential gradient of path (light to dark)
-def dijktras(gameinst, unvisited):
+# def dijktras(gameinst, unvisited):
 
-    board = gameinst.grid
-    start = gameinst.start
-    end = gameinst.end
-    win = gameinst.win
+#     board = gameinst.grid
+#     start = gameinst.start
+#     end = gameinst.end
+#     win = gameinst.win
 
-    # unvisited = [[prevnode, neighbor node 1, 2, 3, 4], []]
-    for setof in unvisited:
-        # print("prev node = " + str(setof[0].get_pos()))
-        for currentnode in setof:
-            # print("currentnode = " + str(currentnode.get_pos()))
-            if currentnode == None: # if out of bounds
-                continue
-            if currentnode.is_unvisited() or currentnode.is_open() or currentnode.is_end():
-                currentnode.make_closed() # mark as visited 
+#     # unvisited = [[prevnode, neighbor node 1, 2, 3, 4], []]
+#     for setof in unvisited:
+#         # print("prev node = " + str(setof[0].get_pos()))
+#         for currentnode in setof:
+#             # print("currentnode = " + str(currentnode.get_pos()))
+#             if currentnode == None: # if out of bounds
+#                 continue
+#             if currentnode.is_unvisited() or currentnode.is_open() or currentnode.is_end():
+#                 currentnode.make_closed() # mark as visited 
                 
-                # has to be here
-                draw(win, ROWS, WIDTH, gameinst)
-                dist = calc_dist3(board, currentnode, setof[0]) # getting distance with weight
-                if currentnode.get_dist() > dist: # if new distance is smaller than exisiting
-                    currentnode.set_dist(dist) # assigning new distance
-                    currentnode.set_prevnode(setof[0]) # setting new previous node for reconstruct_path
-                    # print(setof[0].get_pos())
+#                 # has to be here
+#                 draw(win, ROWS, WIDTH, gameinst)
+#                 dist = calc_dist3(board, currentnode, setof[0]) # getting distance with weight
+#                 if currentnode.get_dist() > dist: # if new distance is smaller than exisiting
+#                     currentnode.set_dist(dist) # assigning new distance
+#                     currentnode.set_prevnode(setof[0]) # setting new previous node for reconstruct_path
+#                     # print(setof[0].get_pos())
     
-                if currentnode == end: # algorithm finish
-                    return end
+#                 if currentnode == end: # algorithm finish
+#                     return end
 
-                tempunvisited = []
-                tempunvisited.append(currentnode) # new list of prev/neighbor with currentnode
-                for neighbor in currentnode.get_neighbors(): # appending (4 times) neighbors of each neighbor
-                    if neighbor == None: # if out of bounds
-                        continue
-                    if neighbor.is_unvisited() or neighbor.is_open() or neighbor.is_end():
-                        if not neighbor.is_end():
-                            neighbor.make_open()
-                        draw(win, ROWS, WIDTH, gameinst)
-                        tempunvisited.append(neighbor) # adding to temp unvisited
+#                 tempunvisited = []
+#                 tempunvisited.append(currentnode) # new list of prev/neighbor with currentnode
+#                 for neighbor in currentnode.get_neighbors(): # appending (4 times) neighbors of each neighbor
+#                     if neighbor == None: # if out of bounds
+#                         continue
+#                     if neighbor.is_unvisited() or neighbor.is_open() or neighbor.is_end():
+#                         if not neighbor.is_end():
+#                             neighbor.make_open()
+#                         draw(win, ROWS, WIDTH, gameinst)
+#                         tempunvisited.append(neighbor) # adding to temp unvisited
                         
-                unvisited.append(tempunvisited) # adding to unvisited
+#                 unvisited.append(tempunvisited) # adding to unvisited
 
-            else: # error condition for node
-                continue
-        if setof in unvisited: # after using neighbor list, remove from unlisted
-            unvisited.remove(setof)
-            return unvisited
-        else: # no path condition
-            print("Path Not Found.")
-            return
+#             else: # error condition for node
+#                 continue
+#         if setof in unvisited: # after using neighbor list, remove from unlisted
+#             unvisited.remove(setof)
+#             return unvisited
+#         else: # no path condition
+#             print("Path Not Found.")
+#             return
 
+def dijkstras(gameinst, currentnode):
+    for neighbor in currentnode.get_neighbors():
+        if not neighbor:
+            print("CONTINUE")
+            continue
+        elif neighbor.is_unvisited() or neighbor.is_open() or neighbor.is_end():
+            dist = currentnode.get_dist() + calc_dist3(gameinst.grid, currentnode, gameinst.start, gameinst.end)
+            if neighbor.get_dist() > dist:
+                neighbor.set_dist(dist)
+                neighbor.set_prevnode(currentnode)
 
-def calc_dist3(board, origin, neighbor):
-    x1, y1 = neighbor.get_pos()
-    x2, y2 = origin.get_pos()
-    return (abs(x1 - x2) + abs(y1 - y2)) # taking into account weight
+            if neighbor.is_unvisited():
+                neighbor.make_open()
+                currentnode.unvisited.append(neighbor)
+            elif neighbor.is_end():
+                return gameinst.end
+
+    
+    currentnode.unvisited.remove(currentnode)
+    currentnode.make_closed()
+
+    print(len(currentnode.unvisited))
+
+    least_dist = float("inf")
+    nextnode = None
+    for node in currentnode.unvisited:
+        if least_dist > node.get_dist():
+            least_dist = node.get_dist()
+            nextnode = node
+    return nextnode
+                
+            
+
+def calc_dist3(board, node, start, end):
+    x1, y1 = node.get_pos()
+    x2, y2 = start.get_pos()
+    x3, y3 = end.get_pos()
+    #print(str(abs((abs(x1 - x2) + abs(y1 - y2)))) + ", " + str((abs(x1 - x3) + abs(y1 - y3))))
+    return abs((abs(x1 - x2) + abs(y1 - y2)) + (abs(x1 - x3) + abs(y1 - y3)))
+                # distance from start           # distance from end

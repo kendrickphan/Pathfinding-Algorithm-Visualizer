@@ -42,12 +42,12 @@ def gui():
         for event in pygame.event.get():
 
             # if user exits
-            if event.type == pygame.QUIT: # if quit button is pressed
+            if event.type == pygame.QUIT: # MAIN QUIT BUTTON
                 print("MANUAL EXIT")
                 running = False
 
-            # making start and end and barriers
-            if pygame.mouse.get_pressed()[0]: # left mouse click 
+            # making start and end and barriers/button select
+            if pygame.mouse.get_pressed()[0]: # LEFT MOUSE 
                 pos = pygame.mouse.get_pos() # get PIXEL POS of click
                 if pos[1] < 800: # handle nodes
                     row, col = get_clicked_pos(pos, ROWS, WIDTH) # GET WHICH NODE INDEX SELECTED
@@ -93,7 +93,7 @@ def gui():
                     button_sel = 0
 
             # resetting nodes
-            elif pygame.mouse.get_pressed()[2]: # right mouse
+            elif pygame.mouse.get_pressed()[2]: # RIGHT MOUSE
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, WIDTH)
 
@@ -121,21 +121,30 @@ def start_game(gameinst):
             node.update_neighbors(gameinst.grid)
 
     currentnode = gameinst.start # init
-
-    # djikstra's set up
     if gameinst.algorithm == 1:
-        unvisited = []
-        unvisited.append([gameinst.start])
-        for neighbor in gameinst.start.get_neighbors(): # getting start neighbors
-            if neighbor != None:
-                neighbor.make_open()
-                unvisited[0].append(neighbor)
+        currentnode.unvisited.append(currentnode)
+        currentnode.set_dist(0)
+    # djikstra's set up
+    # if gameinst.algorithm == 1:
+    #     unvisited = []
+    #     unvisited.append([gameinst.start])
+    #     for neighbor in gameinst.start.get_neighbors(): # getting start neighbors
+    #         if neighbor != None:
+    #             neighbor.make_open()
+    #             unvisited[0].append(neighbor)
 
     # choice of algorithm 
     while 1: # algorithm loop
         if gameinst.algorithm == 1:
-            unvisited = dijktras(gameinst, unvisited) 
-            if unvisited == gameinst.end: # end for dijkstra's
+            # unvisited = dijktras(gameinst, unvisited) 
+            # if unvisited == gameinst.end: # end for dijkstra's
+            #     reconstruct_path(gameinst, gameinst.end)
+            #     break
+            currentnode = dijkstras(gameinst, currentnode)
+            if not currentnode:
+                print("Path not Foundff")
+                break
+            if currentnode.is_end():
                 reconstruct_path(gameinst, gameinst.end)
                 break
         elif gameinst.algorithm == 2:
