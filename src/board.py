@@ -138,7 +138,7 @@ def start_game(gameinst):
             #     break
             currentnode = dijkstras(gameinst, currentnode)
             if not currentnode:
-                print("Path not Foundff")
+                print("Path not Found")
                 break
             if currentnode.is_end():
                 cost = reconstruct_path(gameinst, gameinst.end, cost)

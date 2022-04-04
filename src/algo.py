@@ -126,9 +126,6 @@ def dfs(gameinst, currentnode):
     board = gameinst.grid
     start = gameinst.start
     end = gameinst.end
-    print(currentnode.get_pos())
-    if currentnode == end:
-        print("asdfasdfsaf")
 
     neighbors = get_neighbors(currentnode)
     # for node in neighbors:
@@ -223,7 +220,6 @@ def get_neighbors(currentnode):
 def dijkstras(gameinst, currentnode):
     for neighbor in currentnode.get_neighbors():
         if not neighbor:
-            print("CONTINUE")
             continue
         elif neighbor.is_unvisited() or neighbor.is_open() or neighbor.is_end():
             dist = currentnode.get_dist() + calc_dist3(gameinst.grid, currentnode, gameinst.start, gameinst.end)
@@ -240,8 +236,6 @@ def dijkstras(gameinst, currentnode):
     
     currentnode.unvisited.remove(currentnode)
     currentnode.make_closed()
-
-    print(len(currentnode.unvisited))
 
     least_dist = float("inf")
     nextnode = None
