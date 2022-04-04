@@ -63,16 +63,17 @@ def gui():
                         gameinst.end = end
                     
                     elif node != end and node != start: # wall nodes init after start/end
-                        node.make_barrier(gameinst.win)
-                        gameinst.barriers.append(node)
+                        node.make_barrier(gameinst.win) 
+                        gameinst.barriers.append(node) # add to arr of barriers
 
                 else: # handle buttons
                     button_sel = handle_buttons(win, gameinst, pos)
                     if button_sel == 1: # start game
                         gameinst.grid[0][0].unvisited.clear() # clearing unvisited global arr for astar and bfs
-                        gameinst.paths.clear()
-                        gameinst.end.make_end(gameinst.win)
-                        for row in gameinst.grid:
+                        reset_dist(gameinst) # resets node distances attribute
+                        gameinst.paths.clear() # clears list of paths for gui
+                        gameinst.end.make_end(gameinst.win) # remakes end
+                        for row in gameinst.grid: # resetting color for gui
                             for node in row:
                                 if node.is_open() or node.is_closed() or node.is_path(): # resetting board 
                                     node.reset()
@@ -83,8 +84,8 @@ def gui():
                         gameinst.end, end = None, None
                         newboard = make_board(gameinst.win, ROWS, WIDTH) # remaking board
                         gameinst.grid = newboard # reassigning board
-                        gameinst.barriers.clear()
-                        gameinst.paths.clear()
+                        gameinst.barriers.clear() # clearing barriers arr for gui
+                        gameinst.paths.clear() # clearing paths arr for gui
                         draw(win, ROWS, WIDTH, gameinst)
                     elif button_sel == 3: # end game
                         print("PLAYER QUIT")
@@ -124,14 +125,9 @@ def start_game(gameinst):
     if gameinst.algorithm == 1:
         currentnode.unvisited.append(currentnode)
         currentnode.set_dist(0)
-    # djikstra's set up
-    # if gameinst.algorithm == 1:
-    #     unvisited = []
-    #     unvisited.append([gameinst.start])
-    #     for neighbor in gameinst.start.get_neighbors(): # getting start neighbors
-    #         if neighbor != None:
-    #             neighbor.make_open()
-    #             unvisited[0].append(neighbor)
+
+    cost = 0
+    gameinst.cost = cost
 
     # choice of algorithm 
     while 1: # algorithm loop
@@ -145,33 +141,39 @@ def start_game(gameinst):
                 print("Path not Foundff")
                 break
             if currentnode.is_end():
-                reconstruct_path(gameinst, gameinst.end)
+                cost = reconstruct_path(gameinst, gameinst.end, cost)
                 break
         elif gameinst.algorithm == 2:
             currentnode = astar(gameinst, currentnode)
             if currentnode == gameinst.start: 
                 print("Path not Found.") # no possible path to end
+                currentnode.unvisited.clear()
                 break
             if currentnode == gameinst.end:  # end condition for astar
-                reconstruct_path(gameinst, gameinst.end)
+                cost = reconstruct_path(gameinst, gameinst.end, cost)
+                currentnode.unvisited.clear()
                 break
         elif gameinst.algorithm == 3:
             currentnode = dfs(gameinst, currentnode)
             if currentnode == gameinst.end:
-                reconstruct_path(gameinst, gameinst.end)
+                cost = reconstruct_path(gameinst, gameinst.end, cost)
                 break
         elif gameinst.algorithm == 4:
             currentnode.unvisited.append(gameinst.start)
             bfs(gameinst, currentnode)
-            reconstruct_path(gameinst, gameinst.end)
+            cost = reconstruct_path(gameinst, gameinst.end, cost)
             break
+        
 
         draw(gameinst.win, ROWS, WIDTH, gameinst) # updating board after round
         gameinst.end.make_end(gameinst.win)
+    
+    gameinst.cost = cost
+    print(gameinst.cost)
 
 
 # FUNCTION FOR AFTER ALGORITHM EXECUTION FOR FINDING SHORTEST POSSIBLE PATH
-def reconstruct_path(gameinst, currentnode):
+def reconstruct_path(gameinst, currentnode, cost):
 
     start = gameinst.start
     end = gameinst.end
@@ -182,15 +184,16 @@ def reconstruct_path(gameinst, currentnode):
     # print(end.get_prevnode())
     if currentnode == start: # recursion end
         gameinst.end.make_end(gameinst.win)
-        return
+        return cost
     # print(currentnode.get_pos())
     if not currentnode.is_end():
         gameinst.paths.append(currentnode)
         currentnode.make_path(gameinst.win)
+        cost += 1
         draw(gameinst.win, ROWS, WIDTH, gameinst)
         sleep(.05)
     #print (currentnode.get_prevnode().get_pos())
-    reconstruct_path(gameinst, currentnode.get_prevnode()) 
+    return reconstruct_path(gameinst, currentnode.get_prevnode(), cost) 
 
 # create board list and populate with node instances
 def make_board(win, rows, width):
@@ -213,6 +216,11 @@ def get_clicked_pos(pos, rows, width):
 	col = x // gap
 
 	return row, col
+
+def reset_dist(gameinst):
+    for row in gameinst.grid:
+        for node in row:
+            node.set_dist(float("inf"))
 
 
 # EOF board.py

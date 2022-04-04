@@ -22,6 +22,16 @@ def draw_start(win, gameinst):
 def draw_end(win, gameinst):
 	gameinst.end.make_end(win)
 
+def draw_cost(win, gameinst):
+	if gameinst.cost == 0:
+		coststr = pygame.font.SysFont("Arial", 16)
+		text_render = coststr.render("", 1, BLACK)
+		win.blit(text_render, (450, 950))
+	else:
+		coststr = pygame.font.SysFont("Arial", 16)
+		text_render = coststr.render("Path Cost = " + str(gameinst.cost), 1, BLACK)
+		win.blit(text_render, (432, 960))
+
 # draws nodes in pygame
 def draw(win, rows, width, gameinst):
 	win.fill(GREY)
@@ -39,6 +49,7 @@ def draw(win, rows, width, gameinst):
 		draw_end(win, gameinst)
 	draw_buttons(win, gameinst) # draw buttons
 	draw_key(win)
+	draw_cost(win, gameinst)
 
 	pygame.display.update()
 

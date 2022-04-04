@@ -12,6 +12,7 @@ class Game:
         self.end = None
         self.barriers = []
         self.paths = []
+        self.cost = 0
 
     
 

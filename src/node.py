@@ -175,7 +175,7 @@ class Keys:
     def __init__(self, position, text, boxcolor):
         self.pos = position
         self.text = text
-        self.boxcolor= boxcolor
+        self.boxcolor = boxcolor
         self.font = pygame.font.SysFont("Arial", 12)
 
     def draw(self, win):
