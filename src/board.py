@@ -32,6 +32,12 @@ def gui():
     while running: 
         draw(gameinst.win, ROWS, WIDTH, gameinst) # draws board at the top of every loop
 
+        
+     # updating list of neighbors in node instances
+        for row in gameinst.grid: 
+            for node in row:
+                node.update_neighbors(gameinst.grid)
+
         # keep looking for user input
         for event in pygame.event.get():
 
@@ -99,6 +105,8 @@ def gui():
                 elif node == end:
                     gameinst.end = None
                     end = None
+                elif node in gameinst.barriers:
+                    gameinst.barriers.remove(node)
             
     print("QUITTING!")
     pygame.quit()

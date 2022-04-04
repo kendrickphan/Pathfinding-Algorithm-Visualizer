@@ -1,4 +1,5 @@
 # draws board/lines in pygame gui board
+# mainly handles drawing gui components
 
 from node import *
 import pygame
@@ -59,7 +60,7 @@ def draw_buttons(win, gameinst):
 # finding button pressed, handle button press
 def handle_buttons(win, gameinst, pos):
 	x, y = pos
-	if y < 925 and y > 900:
+	if y < 925 and y > 900: # selecting a button
 		if x > 100 and x < 200:
 			turn_to_white(gameinst)
 			gameinst.buttons[1].bgcolor = YELLOW
@@ -90,10 +91,12 @@ def handle_buttons(win, gameinst, pos):
 
 	return button_sel
 
+# helper function to draw buttons
 def turn_to_white(gameinst):
 	for button in gameinst.buttons[0:4]:
 		button.bgcolor = WHITE
 
+# main function to draw keys
 def draw_key(win):
 	key_start = Keys((100, 850) , "- start", GREEN)
 	key_end = Keys((210, 850) , "- end", RED)
