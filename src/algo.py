@@ -1,7 +1,6 @@
 # algo.py
 # algorithms : A*, Dijkstra's, DFS, BFS
 
-from turtle import end_fill
 from node import *
 from drawboard import *
 
