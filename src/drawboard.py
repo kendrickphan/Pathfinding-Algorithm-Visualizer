@@ -114,7 +114,7 @@ def draw_key(win):
 	key_wall = Keys((320, 850) , "- wall", BLACK)
 	key_searched = Keys((430, 850), "- visited", TURQUOISE2)
 	key_possible = Keys((540, 850) , "- unvisited", TURQUOISE)
-	key_path = Keys((650, 850) , "- shortest path", PURPLE)
+	key_path = Keys((650, 850) , "- shortest path", YELLOW)
 
 	key_start.draw(win)
 	key_end.draw(win)
